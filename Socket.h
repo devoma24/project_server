@@ -30,13 +30,17 @@ class Socket
     int send(const void*, int);
     int send(std::string&);
 
-    int receive(void*, int);
-    std::string receive();
-
     int sendAll(const void*, int);
     int sendAll(std::string&);
 
+    int receive(void*, int);
+    std::string receive();
+
+    void recvAll(void*, std::size_t);
+
     bool valid() const noexcept;
+
+    void connect(std::string, unsigned short);
 
     private:
     struct Impl;

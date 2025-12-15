@@ -1,7 +1,6 @@
 #pragma once
 #include "Socket.h"
 #include <thread>
-#include <atomic>
 
 class ClientSession
 {
@@ -13,9 +12,12 @@ class ClientSession
     ClientSession& operator= (const ClientSession&) = delete;
 
     private:
+
+    std::string readMessage(Socket&);
+    void sendMessage(Socket&, const std::string&);
+
     void run();
 
     Socket socket;
     std::thread worker;
-    std::atomic<bool> running{true};
 };
