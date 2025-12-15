@@ -3,6 +3,12 @@
 #include <cstdint>
 #include <memory>
 
+#ifdef _WIN32
+using socket_handle = unsigned long long;
+#else
+using socket_handle = int;
+#endif
+
 class Socket
 {
     public:
@@ -10,8 +16,8 @@ class Socket
     ~Socket();
 
     public:
-    Socket(Socket&&) noexcept = default;
-    Socket& operator = (Socket&&) noexcept = default;
+    Socket(Socket&&) noexcept;
+    Socket& operator = (Socket&&) noexcept;
 
     Socket(const Socket&) = delete;
     Socket& operator =(const Socket&) = delete;

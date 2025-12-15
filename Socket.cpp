@@ -18,6 +18,18 @@
 struct Socket::Impl
 {
     socket_handle handle = INVALID;
+
+    ~Impl()
+    {
+        if (handle == INVALID)
+            return;
+
+        #ifdef _WIN32
+            closesocket(handle);
+        #else
+            close(handle);
+        #endif
+    }
 };
 
 Socket::Socket(): impl(std::make_unique<Impl>()) 
@@ -34,16 +46,7 @@ Socket::Socket(socket_handle handle): impl(std::make_unique<Impl>())
     impl->handle = handle;
 }
 
-Socket::~Socket() {
-    if (impl && impl->handle != INVALID)
-        return;
-
-    #ifdef _WIN32
-        closesocket(impl_ptr_->handle);
-    #else
-        close(impl->handle);
-    #endif
-}
+Socket::~Socket() = default;
 
 void Socket::bind(unsigned short port)
 {
@@ -85,6 +88,8 @@ int Socket::send(const void*data, int size)
 
     if(sent < 0)
         { throw std::runtime_error("send failed"); }
+
+    return sent;
 }
 
 int Socket::send(std::string& data)
@@ -102,6 +107,8 @@ int Socket::sendAll(const void* data, int size)
         std::size_t sent = send(ptr+total_send, size-total_send);
         total_send += sent;
     }
+
+    return total_send;
 }
 
 int Socket::sendAll(std::string& data)
@@ -116,7 +123,12 @@ int Socket::receive(void* buffer, int size)
         size, 
         0 );
 
-    return 0;
+    if(recv < 0)
+    {
+        throw std::runtime_error("receive failed");
+    }
+
+    return recv;
 }
 
 std::string Socket::receive()
@@ -130,3 +142,6 @@ bool Socket::valid() const noexcept
 {
     return impl && impl->handle != INVALID;
 }
+
+Socket::Socket(Socket&&) noexcept = default;
+Socket& Socket::operator = (Socket&&) noexcept = default;

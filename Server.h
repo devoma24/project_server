@@ -18,7 +18,7 @@ class Server
     void stop();
 
     private:
-    void acceptLoop(Socket&);
+    void acceptLoop();
 
     Socket listener;
     std::vector<std::unique_ptr<ClientSession>> clients;

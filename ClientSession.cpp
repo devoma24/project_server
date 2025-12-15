@@ -17,9 +17,11 @@ void ClientSession::run()
 {
     try
     {
+        std::cout << "Start work witch client" << std::endl;
+        std::string data {};
         while(running)
         {
-            std::string data = socket.receive();
+            data = socket.receive();
             if(data.empty())
             {
                 break;

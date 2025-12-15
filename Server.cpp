@@ -32,13 +32,13 @@ void Server::stop()
     clients.clear();
 }
 
-void Server::acceptLoop(Socket& serverSocket)
+void Server::acceptLoop()
 {
     while(running)
     {
         try
         {
-            Socket client = serverSocket.accept();
+            Socket client = listener.accept();
             std::cout << "Client connetcted" << std::endl;
 
             clients.push_back(std::make_unique<ClientSession>(std::move(client)));
