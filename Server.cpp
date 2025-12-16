@@ -3,6 +3,8 @@
 #include <thread>
 #include "Socket.h"
 
+Storage g_storage;
+
 Server::Server(unsigned short port)
 {
     listener.bind(port);

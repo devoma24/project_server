@@ -36,7 +36,7 @@ int main()
         while(true)
         {
             std::getline(std::cin, input);
-            if(input == "text")
+            if(input == "exit")
             {
                 break;
             }

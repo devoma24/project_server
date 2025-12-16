@@ -30,7 +30,7 @@ Command CommandParser::parse(const std::string& input)
     else if(cmd == "GET")
     {
         Command c;
-        c.type == CommandType::GET;
+        c.type = CommandType::GET;
         iss >> c.key;
 
         if(c.key.empty())

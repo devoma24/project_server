@@ -6,6 +6,8 @@
 #include "Socket.h"
 #include "ClientSession.h"
 
+#include "Storage.h"
+extern Storage g_storage;
 
 class Server
 {

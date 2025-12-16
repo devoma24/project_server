@@ -1,6 +1,9 @@
 #include "ClientSession.h"
 #include <iostream>
 
+#include "CommandParser.h"
+#include "Server.h"
+
 ClientSession::ClientSession(Socket client):
 socket(std::move(client)), worker(&ClientSession::run, this) {}
 
@@ -10,6 +13,7 @@ ClientSession::~ClientSession()
     {
         worker.join();
     }
+    std::cout << "closed session" << std::endl;
 }
 
 void ClientSession::run()
@@ -20,11 +24,41 @@ void ClientSession::run()
 
         while(true)
         {
-            std::string data = readMessage(socket);
+            std::string input = readMessage(socket);
+            Command cmd = CommandParser::parse(input);
 
-            std::cout << "Client says: " << data << std::endl;
-            data = "Echo: " + data;
-            sendMessage(socket, data);
+            std::string response;
+            switch(cmd.type)
+            {
+                case CommandType::SET:
+                {
+                    g_storage.set(cmd.key, cmd.value);
+                    response = "OK";
+                    break;
+                }
+                case CommandType::GET:
+                {
+                    auto answer = g_storage.get(cmd.key);
+                    response = answer? *answer : "NOT_FOUND";
+                    break;
+                }
+                case CommandType::DEL:
+                {
+                    response = g_storage.del(cmd.key)? "DELETED" : "NOT_FOUND";
+                    break;
+                }
+                case CommandType::EXIT:
+                {
+                    sendMessage(socket, "BYE");
+                    return;
+                }
+                default:
+                {
+                    response = "ERR invalid command";
+                    break;
+                }
+            }
+            sendMessage(socket, response);
         }
     }
     catch(const std::exception& e)

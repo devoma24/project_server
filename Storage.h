@@ -13,5 +13,5 @@ class Storage
 
     private:
     std::unordered_map<std::string, std::string> data;
-    std::mutex mutex;
+    mutable std::mutex mutex;
 };
