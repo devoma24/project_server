@@ -1,7 +1,21 @@
-#include "Server.h"
+//#include "Server.h"
+#include "ThreadPool.h"
 #include <iostream>
 
-int main()
+
+int main() {
+    ThreadPool pool(1);
+
+    for (int i = 0; i < 5; ++i) {
+        pool.submit([i] {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::cout << "Task " << i << " done\n";
+        });
+    }
+}
+
+
+/*int main()
 {
     try
     {
@@ -17,5 +31,4 @@ int main()
     {
         std::cerr << e.what() << '\n';
     }
-    
-}
+}*/
