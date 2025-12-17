@@ -1,11 +1,12 @@
 #pragma once
 #include "Socket.h"
+#include "Storage.h"
 #include <thread>
 
 class ClientSession
 {
     public:
-    explicit ClientSession(Socket);
+    explicit ClientSession(Socket, Storage&);
     ~ClientSession();
 
     ClientSession(const ClientSession&) = delete;
@@ -21,4 +22,6 @@ class ClientSession
 
     Socket socket;
     std::thread worker;
+
+    Storage& storage_;
 };

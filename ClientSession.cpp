@@ -4,8 +4,8 @@
 #include "CommandParser.h"
 #include "Server.h"
 
-ClientSession::ClientSession(Socket client):
-socket(std::move(client)), worker(&ClientSession::run, this) {}
+ClientSession::ClientSession(Socket client, Storage& storage):
+socket(std::move(client)), storage_(storage), worker(&ClientSession::run, this) {}
 
 ClientSession::~ClientSession()
 {
@@ -32,19 +32,19 @@ void ClientSession::run()
             {
                 case CommandType::SET:
                 {
-                    g_storage.set(cmd.key, cmd.value);
+                    storage_.set(cmd.key, cmd.value);
                     response = "OK";
                     break;
                 }
                 case CommandType::GET:
                 {
-                    auto answer = g_storage.get(cmd.key);
+                    auto answer = storage_.get(cmd.key);
                     response = answer? *answer : "NOT_FOUND";
                     break;
                 }
                 case CommandType::DEL:
                 {
-                    response = g_storage.del(cmd.key)? "DELETED" : "NOT_FOUND";
+                    response = storage_.del(cmd.key)? "DELETED" : "NOT_FOUND";
                     break;
                 }
                 case CommandType::EXIT:

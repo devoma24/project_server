@@ -9,7 +9,6 @@
 #include "ThreadPool.h"
 
 #include "Storage.h"
-extern Storage g_storage;
 
 class Server
 {
@@ -31,4 +30,6 @@ class Server
     ThreadPool pool_;
     //unsigned short m_port;
     std::atomic<bool> running{false};
+
+    Storage storage_;
 };

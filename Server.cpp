@@ -3,8 +3,6 @@
 #include <thread>
 #include "Socket.h"
 
-Storage g_storage;
-
 Server::Server(unsigned short port, size_t threads) : pool_(threads)
 {
     listener.bind(port);
@@ -41,7 +39,7 @@ void Server::acceptLoop()
             auto client = std::make_shared<Socket>(listener.accept());
             std::cout << "Client connetcted" << std::endl;
             pool_.submit([client, this]() {
-                ClientSession session(std::move(*client));
+                ClientSession session(std::move(*client), storage_);
                 session.run();
             });
         }

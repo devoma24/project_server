@@ -2,14 +2,14 @@
 
 bool Storage::set(const std::string& key, const std::string& value)
 {
-    std::lock_guard lock(mutex);
+    std::unique_lock lock(mutex_);
     data[key] = value;
     return true;
 }
 
 std::optional<std::string> Storage::get(const std::string& key)
 {
-    std::lock_guard lock(mutex);
+    std::shared_lock lock(mutex_);
     auto it = data.find(key);
     if(it == data.end())
     {
@@ -21,6 +21,6 @@ std::optional<std::string> Storage::get(const std::string& key)
 
 bool Storage::del(const std::string& key)
 {
-    std::lock_guard lock(mutex);
+    std::unique_lock lock(mutex_);
     return data.erase(key) > 0;
 }
