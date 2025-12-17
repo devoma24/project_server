@@ -28,7 +28,7 @@ struct Socket::Impl
         #ifdef _WIN32
             closesocket(handle);
         #else
-            close(handle);
+            ::close(handle);
         #endif
     }
 };
@@ -177,4 +177,20 @@ void Socket::connect(std::string host, unsigned short port)
     {
         throw std::runtime_error("connect failed");
     }
+}
+
+void Socket::close()
+{
+    if(!impl || impl->handle == INVALID)
+        return;
+
+#ifdef _WIN32
+    ::shutdown(impl->handle, SD_BOTH);
+    ::closesocket(impl->handle);
+#else
+    ::shutdown(impl->handle, SHUT_RDWR);
+    ::close(impl->handle);
+#endif
+
+    impl->handle = INVALID;
 }

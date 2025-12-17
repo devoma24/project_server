@@ -41,3 +41,17 @@ ThreadPool::~ThreadPool()
         }
     }
 }
+
+void ThreadPool::shutdown()
+{
+    stop_ = true;
+    cv_.notify_all();
+
+    for(auto& t: workers_)
+    {
+        if(t.joinable())
+        {
+            t.join();
+        }
+    }
+}

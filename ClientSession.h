@@ -6,7 +6,7 @@
 class ClientSession
 {
     public:
-    explicit ClientSession(Socket, Storage&);
+    explicit ClientSession(Socket, Storage&, std::atomic<bool>&);
     ~ClientSession();
 
     ClientSession(const ClientSession&) = delete;
@@ -24,4 +24,5 @@ class ClientSession
     std::thread worker;
 
     Storage& storage_;
+    std::atomic<bool>& stopping_;
 };

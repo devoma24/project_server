@@ -30,6 +30,7 @@ class Server
     ThreadPool pool_;
     //unsigned short m_port;
     std::atomic<bool> running{false};
+    std::atomic<bool> stopping_ {false};
 
     Storage storage_;
 };

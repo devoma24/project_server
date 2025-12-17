@@ -22,12 +22,17 @@ void Server::start()
 
 void Server::stop()
 {
+    stopping_ = true;
     running = false;
+
+    listener.close();
 
     if(threadAccept.joinable())
     {
         threadAccept.join();
     }
+
+    pool_.shutdown();
 }
 
 void Server::acceptLoop()
@@ -39,7 +44,7 @@ void Server::acceptLoop()
             auto client = std::make_shared<Socket>(listener.accept());
             std::cout << "Client connetcted" << std::endl;
             pool_.submit([client, this]() {
-                ClientSession session(std::move(*client), storage_);
+                ClientSession session(std::move(*client), storage_, stopping_ );
                 session.run();
             });
         }

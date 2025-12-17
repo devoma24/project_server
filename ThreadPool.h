@@ -25,6 +25,8 @@ class ThreadPool
     cv_.notify_one();
 }
 
+    void shutdown();
+
     private:
     void workerLoop();
 

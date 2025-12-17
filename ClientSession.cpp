@@ -4,8 +4,8 @@
 #include "CommandParser.h"
 #include "Server.h"
 
-ClientSession::ClientSession(Socket client, Storage& storage):
-socket(std::move(client)), storage_(storage), worker(&ClientSession::run, this) {}
+ClientSession::ClientSession(Socket client, Storage& storage, std::atomic<bool>& stop):
+socket(std::move(client)), storage_(storage), stopping_(stop), worker(&ClientSession::run, this) {}
 
 ClientSession::~ClientSession()
 {
@@ -22,7 +22,7 @@ void ClientSession::run()
     {
         std::cout << "Client session started" << std::endl;
 
-        while(true)
+        while(!stopping_)
         {
             std::string input = this->readMessage(socket);
             Command cmd = CommandParser::parse(input);

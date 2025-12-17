@@ -39,10 +39,12 @@ class Socket
     void recvAll(void*, std::size_t);
 
     bool valid() const noexcept;
+    void close();
 
     void connect(std::string, unsigned short);
 
     private:
+
     struct Impl;
     std::unique_ptr<Impl> impl;
 
