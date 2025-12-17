@@ -6,13 +6,15 @@
 #include "Socket.h"
 #include "ClientSession.h"
 
+#include "ThreadPool.h"
+
 #include "Storage.h"
 extern Storage g_storage;
 
 class Server
 {
     public:
-    explicit Server(unsigned short);
+    explicit Server(unsigned short, size_t);
     ~Server();
 
     public:
@@ -23,10 +25,10 @@ class Server
     void acceptLoop();
 
     Socket listener;
-    std::vector<std::unique_ptr<ClientSession>> clients;
 
     std::thread threadAccept;
 
+    ThreadPool pool_;
     //unsigned short m_port;
     std::atomic<bool> running{false};
 };

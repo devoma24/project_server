@@ -5,7 +5,7 @@
 
 Storage g_storage;
 
-Server::Server(unsigned short port)
+Server::Server(unsigned short port, size_t threads) : pool_(threads)
 {
     listener.bind(port);
     listener.listen(10);
@@ -30,8 +30,6 @@ void Server::stop()
     {
         threadAccept.join();
     }
-
-    clients.clear();
 }
 
 void Server::acceptLoop()
@@ -40,10 +38,12 @@ void Server::acceptLoop()
     {
         try
         {
-            Socket client = listener.accept();
+            auto client = std::make_shared<Socket>(listener.accept());
             std::cout << "Client connetcted" << std::endl;
-
-            clients.push_back(std::make_unique<ClientSession>(std::move(client)));
+            pool_.submit([client, this]() {
+                ClientSession session(std::move(*client));
+                session.run();
+            });
         }
         catch(...)
         {

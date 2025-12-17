@@ -12,7 +12,7 @@ void ThreadPool::workerLoop()
 {
     while(true)
     {
-        std::function<void()> task;
+        std::unique_ptr<std::function<void()>> task;
         {
             std::unique_lock<std::mutex> lock(mutex_);
 
@@ -24,17 +24,8 @@ void ThreadPool::workerLoop()
             tasks_.pop();
         }
 
-        task();
+        (*task)();
     }
-}
-
-void ThreadPool::submit(std::function<void()> task)
-{
-    {
-        std::lock_guard<std::mutex> lock(mutex_);
-        tasks_.push(std::move(task));
-    }
-    cv_.notify_one();
 }
 
 ThreadPool::~ThreadPool()

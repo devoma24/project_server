@@ -14,13 +14,23 @@ class ThreadPool
     explicit ThreadPool(std::size_t treadCount);
     ~ThreadPool();
 
-    void submit(std::function<void()> task);
+    template<typename F>
+    void submit(F&& f)
+{
+    auto task = std::make_unique<std::function<void()>>(std::forward<F>(f));
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        tasks_.push(std::move(task));
+    }
+    cv_.notify_one();
+}
 
     private:
     void workerLoop();
 
     std::vector<std::thread> workers_;
-    std::queue<std::function<void()>> tasks_;
+    //std::queue<std::function<void()>> tasks_;
+    std::queue<std::unique_ptr<std::function<void()>>> tasks_;
 
     std::mutex mutex_;
     std::condition_variable cv_;

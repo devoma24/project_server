@@ -24,7 +24,7 @@ void ClientSession::run()
 
         while(true)
         {
-            std::string input = readMessage(socket);
+            std::string input = this->readMessage(socket);
             Command cmd = CommandParser::parse(input);
 
             std::string response;

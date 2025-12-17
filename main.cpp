@@ -1,9 +1,9 @@
-//#include "Server.h"
-#include "ThreadPool.h"
+#include "Server.h"
+//#include "ThreadPool.h"
 #include <iostream>
 
 
-int main() {
+/*int main() {
     ThreadPool pool(1);
 
     for (int i = 0; i < 5; ++i) {
@@ -12,14 +12,14 @@ int main() {
             std::cout << "Task " << i << " done\n";
         });
     }
-}
+}*/
 
 
-/*int main()
+int main()
 {
     try
     {
-        Server server(8080);
+        Server server(8080, 4);
         server.start();
 
         std::cout << "Press Enter to stop server...\n";
@@ -31,4 +31,4 @@ int main() {
     {
         std::cerr << e.what() << '\n';
     }
-}*/
+}
