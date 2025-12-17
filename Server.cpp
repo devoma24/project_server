@@ -16,6 +16,7 @@ Server::~Server()
 
 void Server::start()
 {
+    LOG_INFO("Server started");
     running = true;
     threadAccept = std::thread(&Server::acceptLoop, this);
 }
@@ -41,6 +42,7 @@ void Server::acceptLoop()
     {
         try
         {
+            LOG_INFO("Client connected");
             auto client = std::make_shared<Socket>(listener.accept());
             std::cout << "Client connetcted" << std::endl;
             pool_.submit([client, this]() {
@@ -48,10 +50,11 @@ void Server::acceptLoop()
                 session.run();
             });
         }
-        catch(...)
+        catch(const std::exception& e)
         {
             if(running)
             {
+                LOG_ERROR("accept error: " + std::string(e.what()));
                 std::cout << "Accept error" << std::endl;
             }
         }

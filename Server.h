@@ -10,6 +10,8 @@
 
 #include "Storage.h"
 
+#include "LoggerMacros.h"
+
 class Server
 {
     public:
