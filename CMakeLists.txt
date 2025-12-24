@@ -38,3 +38,25 @@ else()
     -Wconversion
     )
 endif()
+
+option(BUILD_TESTS "Build tests" ON)
+
+if (BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
+add_library(server_core
+    src/CommandParser.cpp
+    src/Storage.cpp
+    src/Socket.cpp
+    src/ClientSession.cpp
+)
+
+target_include_directories(server_core
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/include
+)
+
+find_package(Threads REQUIRED)
+target_link_libraries(server_core PUBLIC Threads::Threads)
