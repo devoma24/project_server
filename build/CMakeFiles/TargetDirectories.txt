@@ -1,0 +1,3 @@
+/Users/Devoma/Documents/Code C++/project_server/build/CMakeFiles/server.dir
+/Users/Devoma/Documents/Code C++/project_server/build/CMakeFiles/edit_cache.dir
+/Users/Devoma/Documents/Code C++/project_server/build/CMakeFiles/rebuild_cache.dir
